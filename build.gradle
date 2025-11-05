@@ -62,9 +62,8 @@ test {
 
 spotless {
     java {
-        googleJavaFormat()
+        googleJavaFormat('1.22.0')
         target 'src/*/java/**/*.java'
-        removeUnusedImports()
     }
 }
 

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: java-springboot-template
+    name: test-java-repo
 
 # Default profile: dev (H2 in-memory)
 ---

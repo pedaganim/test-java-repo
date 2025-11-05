@@ -49,6 +49,7 @@ build/
 **/build/
 target/
 out/
+bin/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### IDEs and editors

@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: java-springboot-template-api:latest
+    image: test-java-repo-api:latest
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/app}
@@ -20,7 +20,7 @@ services:
     build:
       context: ./ui
       dockerfile: Dockerfile
-    image: java-springboot-template-ui:latest
+    image: test-java-repo-ui:latest
     ports:
       - "8081:80"
     depends_on:

@@ -1,4 +1,4 @@
-# java-springboot-template
+# test-java-repo
 Creating sample template for java projects
 
 ## Overview
@@ -65,17 +65,17 @@ The UI calls `GET /api/hello` which returns "Hello, World!" from the backend.
 ## Docker
 Build API image:
 ```bash
-docker build -t java-springboot-template-api .
+docker build -t test-java-repo-api .
 ```
 Run API (dev profile, H2):
 ```bash
-docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev java-springboot-template-api
+docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev test-java-repo-api
 ```
 
 UI image (Nginx, static):
 ```bash
-docker build -t java-springboot-template-ui ./ui
-docker run --rm -p 8081:80 java-springboot-template-ui
+docker build -t test-java-repo-ui ./ui
+docker run --rm -p 8081:80 test-java-repo-ui
 ```
 
 ## Docker Compose (API + UI + Postgres)
