@@ -1,0 +1,82 @@
+
+# Windsurf Project Rules — Clean Code & Clean Architecture
+
+# --- Project facts (edit to your stack) ---
+1. Primary language: Java 21. Build: Gradle (Kotlin DSL). Tests: JUnit 5 + AssertJ + Mockito. Lint: Spotless + Checkstyle. Coverage: JaCoCo (min 85% on domain/use-cases).
+2. Architecture style: Clean Architecture (Hexagonal). Layers: (a) domain (entities, value objects), (b) usecases/application (input/output ports, services), (c) adapters (web, db, messaging), (d) framework/drivers (Spring Boot, AWS SDK, etc.).
+3. Dependency rule: Inner layers must NOT depend on outer layers. Depend on abstractions (ports), never concretions.
+4. Packaging convention:
+   - com.myorg.myapp.domain.*
+   - com.myorg.myapp.usecase.* (ports, interactor/service)
+   - com.myorg.myapp.adapter.web.*, .db.*, .messaging.*
+   - com.myorg.myapp.config.*, .infrastructure.*
+5. Data flow: Controllers/handlers -> input port -> use case -> domain -> output port -> adapter implementation.
+
+# --- Clean Code expectations (always follow) ---
+6. Functions are small, single purpose, and readable (<= 20–30 lines typical). One level of abstraction per function.
+7. Name things for intent (no abbreviations). Avoid boolean flags in method signatures.
+8. No commented-out code. Comments are for WHY, not WHAT. Code and tests express the WHAT.
+9. Fail fast with meaningful exceptions. No broad catch; never swallow exceptions. Bubble domain errors via Result/Either or specific checked exceptions at boundaries.
+10. Immutability by default in domain models; side effects isolated at boundaries.
+11. No global state, static singletons, or hidden temporal coupling.
+12. Prefer pure functions and dependency injection. Constructors take ports/interfaces, not concrete adapters.
+13. Eliminate duplication before adding helpers; DRY but not at cost of clarity.
+14. Guard clauses > deep nesting.
+15. Log at boundaries (adapters). Domain/usecases should not log. Use structured logs. No sensitive data in logs.
+
+# --- Clean Architecture rules (enforced) ---
+16. Domain has ZERO dependencies on Spring, JPA, AWS SDK, or any frameworks.
+17. Use cases depend only on domain and port interfaces. They orchestrate policies, not IO.
+18. Adapters implement ports and perform IO (HTTP, DB, MQ, S3, etc.). No business rules in adapters.
+19. Mapping:
+    - DTOs/ViewModels exist only in adapters.
+    - Persistence models (JPA records, table rows) are adapter concerns; map to domain entities.
+20. Transactions are opened in the adapter boundary; the use case is unaware of transaction mechanics.
+21. Configuration lives in framework/drivers layer. Feature flags and env are injected via ports/config objects.
+
+# --- Testing contract ---
+22. Unit tests cover domain entities and use cases without Spring/context. Deterministic, fast.
+23. Contract tests validate adapter implementations against port interfaces (e.g., DB repo conforms to RepositoryPort).
+24. Slice tests for web (controller + serialization), persistence (repo + schema), messaging (producer/consumer).
+25. End-to-end tests for critical flows only; keep them few and stable.
+26. When generating code, also generate tests that demonstrate usage and edge cases.
+
+# --- Performance, safety, and maintainability ---
+27. Public APIs are stable; everything else package-private where possible.
+28. Validate inputs at boundaries; domain assumes valid invariants and enforces them via types/constructors.
+29. Prefer records/value objects for small aggregates; avoid primitive obsession.
+30. Feature toggles: read once at startup or via injected provider; avoid scattering flag checks across domain logic.
+31. Concurrency: Use immutable messages and idempotent handlers. Retries are at adapter boundary with backoff.
+
+# --- Coding style & scaffolding (what to ask Windsurf to do) ---
+32. When I ask for a feature, propose:
+    - a short plan,
+    - the ports/interfaces to add/change,
+    - the adapters to implement,
+    - the minimal domain changes,
+    - and the tests to write.
+   Then implement incrementally by layer (ports -> use case -> adapter -> wiring -> tests).
+33. Generate Gradle tasks, Spotless/Checkstyle config, and JaCoCo thresholds if missing.
+34. For persistence, propose schema/migrations separately from code changes; generate reversible migrations.
+35. For HTTP, generate OpenAPI spec first (or update it) then controllers/handlers + DTOs from the spec.
+36. For messaging, define message contracts (schemas) and idempotency strategy before producing code.
+
+# --- Non-negotiables (do NOT do) ---
+37. Do NOT introduce framework deps into domain/usecase modules.
+38. Do NOT access DB, HTTP clients, queues, filesystems, env vars from domain/usecases.
+39. Do NOT modify generated code outside the agreed scope without showing a plan.
+40. Do NOT create hidden singletons or service locators.
+
+# --- Review checklist Windsurf must run before completing a task ---
+41. Layers respected? (dependency direction)
+42. Ports defined and implemented? (input/output)
+43. Tests present at the right levels and pass locally?
+44. Names and files match package structure?
+45. Logs/metrics only at boundaries? No secrets in logs.
+46. Build, lint, and coverage thresholds met? (≥85% for domain/usecases)
+47. Documentation updated: README + PROJECT_PRINCIPLES.md + OpenAPI/schema where applicable.
+
+# --- References for the agent (keep short to save tokens) ---
+48. Clean Code (Robert C. Martin): readability, small functions, clear names, no dead code.
+49. Clean Architecture (Robert C. Martin): independent domain, ports/adapters, dependency inversion.
+50. If a request conflicts with any rule above, ask to confirm before violating the rule and suggest a compliant alternative.
