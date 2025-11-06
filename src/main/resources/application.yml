@@ -1,6 +1,8 @@
 spring:
   application:
     name: test-java-repo
+  profiles:
+    active: dev
 
 # Default profile: dev (H2 in-memory)
 ---
