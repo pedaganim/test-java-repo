@@ -3,6 +3,7 @@ package com.myorg.myapp.service;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import com.myorg.myapp.config.aop.TimeTaken;
 import com.myorg.myapp.model.User;
 import com.myorg.myapp.repository.UserRepository;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
+@TimeTaken
 public class UserService {
   private final UserRepository repo;
 

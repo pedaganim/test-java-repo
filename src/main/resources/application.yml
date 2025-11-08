@@ -12,7 +12,18 @@ management:
   prometheus:
     metrics:
       export:
+        enabled: true
+  metrics:
+    export:
+      logging:
         enabled: false
+        step: 10s
+
+app:
+  metrics:
+    singleline:
+      enabled: false
+      interval-ms: 10000
 
 # Default profile: dev (H2 in-memory)
 ---
@@ -41,6 +52,12 @@ management:
     metrics:
       export:
         enabled: true
+
+app:
+  metrics:
+    singleline:
+      enabled: true
+      interval-ms: 10000
 
 # Test profile: H2 in-memory, create-drop
 ---
